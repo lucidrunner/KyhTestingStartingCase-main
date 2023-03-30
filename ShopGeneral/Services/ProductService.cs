@@ -23,6 +23,7 @@ public  class ProductService : IProductService
         _pricingService = pricingService;
         _mapper = mapper;
     }
+
     public IEnumerable<ProductServiceModel> GetNewProducts(int cnt, CurrentCustomerContext context)
     {
         return _pricingService.CalculatePrices(_mapper.Map<IEnumerable<ProductServiceModel>>(_context.Products

@@ -20,7 +20,6 @@ public class Products : ConsoleAppBase
     public void ExportJson(string inputTo)
     {
         _logger.LogInformation("ExportJson starting");
-        Console.WriteLine(inputTo);
         var allProducts = _productService.GetAllProducts().ToList();
         var exportedProducts = new ExportedProducts();
         exportedProducts.total = allProducts.Count;
@@ -41,18 +40,8 @@ public class Products : ConsoleAppBase
         }
 
         DateTime today = DateTime.Now;
-
-        if (!Directory.Exists("outfiles"))
-            Directory.CreateDirectory("outfiles");
-        if(!Directory.Exists($"outfiles\\{inputTo}"))
-            Directory.CreateDirectory($"outfiles\\{inputTo}");
-
-        string fileName = $"outfiles\\{inputTo}\\{today:yyyy/MM/dd}.txt";
-
-        _fileService.SaveJson(fileName, exportedProducts);
-        
-
-
+        string fileName = $"{today:yyyy/MM/dd}.txt";
+        _fileService.SaveJson(inputTo, fileName, exportedProducts);
         _logger.LogInformation("ExportJson ending");
     }
 }
