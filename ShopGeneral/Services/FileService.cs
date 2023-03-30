@@ -9,15 +9,29 @@ namespace ShopGeneral.Services
 {
     public class FileService: IFileService
     {
-        public void SaveJson(string path, object classToSave)
-        {
-            var json = JsonConvert.SerializeObject(classToSave, Formatting.Indented);
-            File.WriteAllText(path, json);
-        }
-    }
+        private const string BaseFolder = "outfiles";
 
-    public interface IFileService
-    {
-        void SaveJson(string path, object classToSave);
+        public FileService()
+        {
+            if (!Directory.Exists(BaseFolder))
+                Directory.CreateDirectory(BaseFolder);
+        }
+
+        public void SaveJson(string folder, string fileName, object classToSave)
+        {
+            if (!Directory.Exists($"{BaseFolder}\\{folder}"))
+                Directory.CreateDirectory($"{BaseFolder}\\{folder}");
+
+            var path = $"{BaseFolder}\\{folder}\\{fileName}";
+            var json = JsonConvert.SerializeObject(classToSave, Formatting.Indented);
+            try
+            {
+                File.WriteAllText(path, json);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
     }
 }
