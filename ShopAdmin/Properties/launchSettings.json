@@ -2,7 +2,11 @@
   "profiles": {
     "ShopAdmin": {
       "commandName": "Project",
-      "commandLineArgs": "agreement expires --days 30"
+      "commandLineArgs": "agreement test --input pricerunner"
+    },
+    "ExportJson": {
+      "commandName": "Project",
+      "commandLineArgs": "products export-json --input-to pricerunner"
     }
   }
 }

@@ -29,5 +29,6 @@ namespace ShopAdmin.Commands
             }
             _logger.LogInformation("Expires ending");
         }
+        
     }
 }
