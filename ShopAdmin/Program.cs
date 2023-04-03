@@ -19,11 +19,14 @@ builder.ConfigureServices((ctx, services) =>
         .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<ApplicationDbContext>();
 
+    
 
     services.AddTransient<IAgreementService, AgreementService>();
     services.AddTransient<IProductService, ProductService>();
     services.AddTransient<IPricingService, PricingService>();
     services.AddTransient<IFileService, FileService>();
+    services.AddTransient<IManufacturerService, ManufacturerService>();
+    services.AddTransient<IEmailService, EmailService>();
     services.AddTransient<DataInitializer>();
     // Using Cysharp/ZLogger for logging to file
     //services.AddLogging(logging =>

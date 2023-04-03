@@ -7,6 +7,10 @@
     "ExportJson": {
       "commandName": "Project",
       "commandLineArgs": "products export-json --input-to pricerunner"
+    },
+    "SendEmail": {
+      "commandName": "Project",
+      "commandLineArgs": "manufacturer send-report --send-on-date 3"
     }
   }
 }
