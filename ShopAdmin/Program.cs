@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ShopGeneral.Data;
@@ -20,6 +21,9 @@ builder.ConfigureServices((ctx, services) =>
 
 
     services.AddTransient<IAgreementService, AgreementService>();
+    services.AddTransient<IProductService, ProductService>();
+    services.AddTransient<IPricingService, PricingService>();
+    services.AddTransient<IFileService, FileService>();
     services.AddTransient<DataInitializer>();
     // Using Cysharp/ZLogger for logging to file
     //services.AddLogging(logging =>
