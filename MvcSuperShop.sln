@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopGeneral", "ShopGeneral\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopAdmin.Tests", "ShopAdmin.Tests\ShopAdmin.Tests.csproj", "{28806E5B-CC69-4C49-86C3-281AD2097813}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopGeneral.Tests", "ShopGeneral.Tests\ShopGeneral.Tests.csproj", "{EDFDB2BE-59CF-462D-8544-5EC03F40FDBC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopGeneral.Tests", "ShopGeneral.Tests\ShopGeneral.Tests.csproj", "{EDFDB2BE-59CF-462D-8544-5EC03F40FDBC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
