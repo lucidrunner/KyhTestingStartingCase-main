@@ -7,6 +7,10 @@
     "ExportJson": {
       "commandName": "Project",
       "commandLineArgs": "products export-json --input-to pricerunner"
+    },
+    "CheckEmpty": {
+      "commandName": "Project",
+      "commandLineArgs": "category check-empty --input-to category"
     }
   }
 }
