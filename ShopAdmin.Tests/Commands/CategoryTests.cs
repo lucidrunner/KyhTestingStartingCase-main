@@ -28,7 +28,7 @@ namespace ShopAdmin.Tests.Commands
         }
 
         [TestMethod]
-        public void When_exporting_products_then_file_service_is_called()
+        public void When_exporting_empty_category_then_file_service_is_called()
         {
             //Arrange
             //Act
@@ -40,35 +40,92 @@ namespace ShopAdmin.Tests.Commands
                 fileService.SaveJson(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object>()), Times.Once);
         }
 
-        //[TestMethod]
-        //public void When_exporting_products_then_correct_folder_is_called()
-        //{
-        //    //Arrange
-        //    string folder = "pricerunner";
+        [TestMethod]
+        public void When_exporting_products_then_correct_folder_is_called()
+        {
+            //Arrange
+            string folder = "categories";
 
-        //    //Act
-        //    sut.ExportJson(folder);
-
-
-        //    //Assert
-        //    _fileService.Verify(fileService =>
-        //        fileService.SaveJson(folder, It.IsAny<string>(), It.IsAny<object>()), Times.Once);
-        //}
-
-        //[TestMethod]
-        //public void When_exporting_products_then_file_is_saved_to_todays_date()
-        //{
-        //    //Arrange
-        //    string folder = "pricerunner";
-        //    string today = DateTime.Now.ToString("yyyy/MM/dd") + ".txt";
-            
-        //    //Act
-        //    sut.ExportJson(folder);
+            //Act
+            sut.CheckEmpty(folder);
 
 
-        //    //Assert
-        //    _fileService.Verify(fileService =>
-        //        fileService.SaveJson(folder, today, It.IsAny<object>()), Times.Once);
-        //}
+            //Assert
+            _fileService.Verify(fileService =>
+                fileService.SaveJson(folder, It.IsAny<string>(), It.IsAny<object>()), Times.Once);
+        }
+
+        [TestMethod]
+        public void When_exporting_products_then_file_is_saved_to_todays_date()
+        {
+            //Arrange
+            string folder = "categories";
+            string today = "missingproducts-" + DateTime.Now.ToString("yyyy/MM/dd") + ".txt";
+
+            //Act
+            sut.CheckEmpty(folder);
+
+
+            //Assert
+            _fileService.Verify(fileService =>
+                fileService.SaveJson(folder, today, It.IsAny<object>()), Times.Once);
+        }
+
+        [TestMethod]
+        public void CheckEmpty_DoesNotSaveJson_WhenThereAreNoMissingProducts()
+        {
+            // Arrange
+            var categories = new List<Category>
+        {
+            new Category { Id = 1, Name = "Category 1" },
+            new Category { Id = 2, Name = "Category 2" }
+        };
+
+            var products = new List<Product>
+        {
+            new Product { Id = 1, Name = "Product 1", Category = categories[0] },
+            new Product { Id = 2, Name = "Product 2", Category = categories[1] }
+        };
+
+            _categoryService.Setup(x => x.GetAllCategories()).Returns(categories);
+            _productService.Setup(x => x.GetAllProducts()).Returns(products);
+
+            string inputTo = "categories";
+
+            // Act
+            sut.CheckEmpty(inputTo);
+
+            // Assert
+            _fileService.Verify(x => x.SaveJson(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IEnumerable<string>>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void CheckEmpty_SavesJsonWithMissingProducts_WhenThereAreMissingProducts()
+        {
+            // Arrange
+            var categories = new List<Category>
+        {
+            new Category { Id = 1, Name = "Category 1" },
+            new Category { Id = 2, Name = "Category 2" }
+        };
+
+            var products = new List<Product>
+        {
+            new Product { Id = 1, Name = "Product 1", Category = categories[0] },
+            new Product { Id = 2, Name = "Product 2", Category = categories[0] }
+        };
+
+            _categoryService.Setup(x => x.GetAllCategories()).Returns(categories);
+            _productService.Setup(x => x.GetAllProducts()).Returns(products);
+
+            string inputTo = "categories";
+            var expectedMissingProducts = new List<string> { "Category 2" };
+
+            // Act
+            sut.CheckEmpty(inputTo);
+
+            // Assert
+            _fileService.Verify(x => x.SaveJson(It.IsAny<string>(), It.IsAny<string>(), expectedMissingProducts), Times.Once);
+        }
     }
 }
