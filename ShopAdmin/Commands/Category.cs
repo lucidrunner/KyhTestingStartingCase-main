@@ -4,14 +4,14 @@ using ShopGeneral.Services;
 
 namespace ShopAdmin.Commands;
 
-public class Category : ConsoleAppBase
+public class Categorys : ConsoleAppBase
 {
     private readonly ILogger<Products> _logger;
     private readonly IProductService _productService;
     private readonly IFileService _fileService;
     private readonly ICategoryService _categoryService;
 
-    public Category(ILogger<Products> logger, IProductService productService, IFileService fileService, ICategoryService categoryService)
+    public Categorys(ILogger<Products> logger, IProductService productService, IFileService fileService, ICategoryService categoryService)
     {
         _logger = logger;
         _productService = productService;
@@ -21,13 +21,14 @@ public class Category : ConsoleAppBase
 
     public void CheckEmpty(string inputTo)
     {
-        var temp = _categoryService.GetAllCategories();
-        Console.WriteLine(temp);
+        _logger.LogInformation("exportjson checkempty");
+        var missingProducts = _categoryService.GetAllCategories().Where(category => !_productService
+        .GetAllProducts().Select(product => product.Category.Name).Contains(category.Name)).Select(category => category.Name);
 
-        //DateTime today = DateTime.Now;
-        //string fileName = $"{today:yyyy/MM/dd}.txt";
-        //_fileService.SaveJson(inputTo, fileName, exportedProducts);
-        //_logger.LogInformation("ExportJson ending");
+        DateTime today = DateTime.Now;
+        string filename = $"missingproducts-{today:yyyy/MM/dd}.txt";
+        _fileService.SaveJson(inputTo, filename, missingProducts);
+        _logger.LogInformation("exportjson ending");
     }
 
 
