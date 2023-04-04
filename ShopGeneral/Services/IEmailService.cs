@@ -1,10 +1,10 @@
-﻿namespace ShopGeneral.Services;
+﻿using ShopGeneral.Model;
+
+namespace ShopGeneral.Services;
 
 public interface IEmailService
 {
-    bool IsValidEmail(string email);
-    void SendMessage(string nameTo, string emailTo, string subject, string message);
+    void SendMessage(IEmailInfo emailInfo);
+    void SendMessages(List<IEmailInfo> emailInfos);
 
-    //void Connect();
-    //void Disconnect();
 }

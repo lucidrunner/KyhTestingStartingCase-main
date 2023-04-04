@@ -1,74 +1,76 @@
-﻿using System.Runtime.InteropServices.ComTypes;
-using MailKit.Net.Smtp;
+﻿using MailKit.Net.Smtp;
+using Microsoft.Extensions.Configuration;
 using MimeKit;
+using ShopGeneral.Model;
 
 namespace ShopGeneral.Services
 {
     public class EmailService : IEmailService
     {
+        private SmtpClient _client = new SmtpClient();
         //TODO Ladda från config istället
-        private const string UserName = "Savanah Larson";
-        private const string UserEmail = "savanah.larson32@ethereal.email";
-        private const string Password = "4mwQ6gtQUS4fKPrF92";
-        private const string Serverhost = "smtp.ethereal.email";
-        private const int Port = 587;
+        private string _userName;
+        private string _userEmail;
+        private string _password;
+        private string _serverhost;
+        private int _port = 587;
 
-        public bool IsValidEmail(string email)
+        public EmailService()
         {
-            return email != null && MailboxAddress.TryParse(email, out MailboxAddress _);
-        }
-
-        //private SmtpClient _client = null;
-
-        //public void Connect()
-        //{
-        //    _client = new SmtpClient();
-        //    _client.Connect(Serverhost, Port, false);
-        //    _client.Authenticate(UserEmail, Password);
-        //}
-
-        //public void Disconnect()
-        //{
-        //    _client.Disconnect(true);
-        //    _client = null;
-        //}
-
-        public void SendMessage(string nameTo, string emailTo, string subject, string message)
-        {
-            //if (_client == null)
-            //    Connect();
-
-            var email = new MimeMessage();
-            email.From.Add(new MailboxAddress(UserName, UserEmail));
-            email.To.Add(new MailboxAddress(nameTo, emailTo));
-            email.Subject = subject;
-            email.Body = new TextPart("plain")
-            {
-                Text = message
-            };
-
-
-            using (var client = new SmtpClient())
-            {
-                client.Connect(Serverhost, Port, false);
-
-                client.Authenticate(UserEmail, Password);
-
-                client.Send(email);
-                client.Disconnect(true);
-            }
-        }
-
-        //TODO Gör detta
-        //public void SendMessages(List<EmailInfo> emails)
-        //{
-        //    //Anslut till clienten
-
-        //    //Foreach
-        //    //För varje info i emails, skapa en ny Mimemessage
-        //    //Skicka meddelandet
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("emailconnection.json")
+                .Build();
             
-        //    //Disconnecta på slutet
-        //}
+            //TODO Hur vill man felhantera detta?
+            _userName = configuration.GetSection("EmailSettings")["UserName"];
+            _userEmail = configuration.GetSection("EmailSettings")["UserEmail"];
+            _password = configuration.GetSection("EmailSettings")["Password"];
+            _serverhost = configuration.GetSection("EmailSettings")["Serverhost"];
+            var port = configuration.GetSection("EmailSettings")["Port"];
+
+            if (!int.TryParse(port, out _port))
+            {
+                //?
+            }
+            
+        }
+
+        private void Connect()
+        {
+            _client.Connect(_serverhost, _port, false);
+            _client.Authenticate(_userEmail, _password);
+        }
+
+        private void Disconnect()
+        {
+            _client.Disconnect(true);
+        }
+
+        public void SendMessage(IEmailInfo emailInfo)
+        {
+            SendMessages(new List<IEmailInfo>(){emailInfo});
+        }
+
+        public void SendMessages(List<IEmailInfo> emailInfos)
+        {
+            Connect();
+
+            foreach (IEmailInfo emailInfo in emailInfos)
+            {
+                var email = new MimeMessage();
+                email.From.Add(new MailboxAddress(_userName, _userEmail));
+                email.To.Add(new MailboxAddress(emailInfo.ReceiverName, emailInfo.ReceiverEmail));
+                email.Subject = emailInfo.Subject;
+                email.Body = new TextPart("plain")
+                {
+                    Text = emailInfo.Message
+                };
+                
+                _client.Send(email);
+            }
+
+            Disconnect();
+        }
+        
     }
 }
