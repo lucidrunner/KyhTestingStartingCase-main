@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using ShopAdmin.Commands;
 using ShopGeneral.Data;
+using ShopGeneral.Model;
 using ShopGeneral.Services;
 using Manufacturer = ShopAdmin.Commands.Manufacturer;
 
@@ -61,15 +62,18 @@ namespace ShopAdmin.Tests.Commands
             };
             List<ShopGeneral.Data.Manufacturer> testList = new(){manufacturer};
             _manufacturerService.Setup(service => service.GetAllManufacturers()).Returns(testList);
-            _emailService.Setup(service => service.IsValidEmail(manufacturer.EmailReport)).Returns(true);
+            
+
 
             //Act
             sut.SendReport(DateTime.Today.Day);
 
             //Assert
-            _emailService.Verify(service => service.IsValidEmail(manufacturer.EmailReport), Times.Once);
-            _emailService.Verify(service => service.SendMessage(manufacturer.Name, manufacturer.EmailReport, 
-                It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            //Moq headache - verify that the test sends a list of emails where the first email matches the manufacturer we sent in
+            _emailService.Verify(service => service.SendMessages(
+                It.Is<List<IEmailInfo>>(emails => 
+                    string.Equals(emails.First().ReceiverName, manufacturer.Name)
+                    && string.Equals(emails.First().ReceiverEmail, manufacturer.EmailReport))), Times.Once);
         }
 
         [TestMethod]
@@ -79,19 +83,17 @@ namespace ShopAdmin.Tests.Commands
             ShopGeneral.Data.Manufacturer manufacturer = new ShopGeneral.Data.Manufacturer()
             {
                 Name = "Test",
-                EmailReport = "info@bugatti.se"
+                EmailReport = "info@b  ugatti.se"
             };
             List<ShopGeneral.Data.Manufacturer> testList = new() { manufacturer };
             _manufacturerService.Setup(service => service.GetAllManufacturers()).Returns(testList);
-            _emailService.Setup(service => service.IsValidEmail(manufacturer.EmailReport)).Returns(false);
             
             //Act
             sut.SendReport(DateTime.Today.Day);
 
             //Assert
-            _emailService.Verify(service => service.IsValidEmail(manufacturer.EmailReport), Times.Once);
-            _emailService.Verify(service => service.SendMessage(manufacturer.Name, manufacturer.EmailReport,
-                It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+            _emailService.Verify(service => service.SendMessages(
+                It.Is<List<IEmailInfo>>(emails => emails.Count == 0)), Times.Once);
         }
     }
 }
