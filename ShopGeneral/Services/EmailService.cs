@@ -15,10 +15,18 @@ namespace ShopGeneral.Services
         private readonly int _port;
         private readonly bool _validConnection;
 
+        private const string ConfigurationFilePath = "emailconnection.json";
+
         public EmailService()
         {
+            if (!File.Exists(ConfigurationFilePath))
+            {
+                _validConnection = false;
+                return;
+            }
+
             var configuration = new ConfigurationBuilder()
-                .AddJsonFile("emailconnection.json")
+                .AddJsonFile(ConfigurationFilePath)
                 .Build();
             
             _userName = configuration.GetSection("EmailSettings")["UserName"] ?? string.Empty;
