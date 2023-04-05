@@ -25,10 +25,14 @@ public class Categorys : ConsoleAppBase
         var missingProducts = _categoryService.GetAllCategories().Where(category => !_productService
         .GetAllProducts().Select(product => product.Category.Name).Contains(category.Name)).Select(category => category.Name);
 
-        DateTime today = DateTime.Now;
-        string filename = $"missingproducts-{today:yyyy/MM/dd}.txt";
-        _fileService.SaveJson(inputTo, filename, missingProducts);
-        _logger.LogInformation("exportjson ending");
+        if (missingProducts.Count() > 0)
+        {
+            DateTime today = DateTime.Now;
+            string filename = $"missingproducts-{today:yyyy/MM/dd}.txt";
+            _fileService.SaveJson(inputTo, filename, missingProducts);
+        }
+            _logger.LogInformation("exportjson ending");
+        
     }
 
 

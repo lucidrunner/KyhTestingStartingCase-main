@@ -31,19 +31,49 @@ namespace ShopAdmin.Tests.Commands
         public void When_exporting_empty_category_then_file_service_is_called()
         {
             //Arrange
+            var categories = new List<Category>
+        {
+            new Category { Id = 1, Name = "Category 1" },
+            new Category { Id = 2, Name = "Category 2" }
+        };
+
+            var products = new List<Product>
+        {
+            new Product { Id = 1, Name = "Product 1", Category = categories[0] },
+            new Product { Id = 2, Name = "Product 2", Category = categories[1] }
+        };
+
+            _categoryService.Setup(x => x.GetAllCategories()).Returns(categories);
+            _productService.Setup(x => x.GetAllProducts()).Returns(products);
+
             //Act
             sut.CheckEmpty("");
 
 
             //Assert
             _fileService.Verify(fileService => 
-                fileService.SaveJson(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object>()), Times.Once);
+                fileService.SaveJson(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IEnumerable<string>>()), Times.Once);
         }
 
         [TestMethod]
         public void When_exporting_products_then_correct_folder_is_called()
         {
             //Arrange
+            var categories = new List<Category>
+        {
+            new Category { Id = 1, Name = "Category 1" },
+            new Category { Id = 2, Name = "Category 2" }
+        };
+
+            var products = new List<Product>
+        {
+            new Product { Id = 1, Name = "Product 1", Category = categories[0] },
+            new Product { Id = 2, Name = "Product 2", Category = categories[1] }
+        };
+
+            _categoryService.Setup(x => x.GetAllCategories()).Returns(categories);
+            _productService.Setup(x => x.GetAllProducts()).Returns(products);
+
             string folder = "categories";
 
             //Act
@@ -59,6 +89,21 @@ namespace ShopAdmin.Tests.Commands
         public void When_exporting_products_then_file_is_saved_to_todays_date()
         {
             //Arrange
+            var categories = new List<Category>
+        {
+            new Category { Id = 1, Name = "Category 1" },
+            new Category { Id = 2, Name = "Category 2" }
+        };
+
+            var products = new List<Product>
+        {
+            new Product { Id = 1, Name = "Product 1", Category = categories[0] },
+            new Product { Id = 2, Name = "Product 2", Category = categories[1] }
+        };
+
+            _categoryService.Setup(x => x.GetAllCategories()).Returns(categories);
+            _productService.Setup(x => x.GetAllProducts()).Returns(products);
+
             string folder = "categories";
             string today = "missingproducts-" + DateTime.Now.ToString("yyyy/MM/dd") + ".txt";
 
