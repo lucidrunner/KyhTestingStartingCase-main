@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using ShopGeneral.Data;
 using ShopGeneral.Services;
 
 namespace ShopAdmin.Commands;
@@ -22,8 +21,12 @@ public class Categorys : ConsoleAppBase
     public void CheckEmpty(string inputTo)
     {
         _logger.LogInformation("exportjson checkempty");
-        var missingProducts = _categoryService.GetAllCategories().Where(category => !_productService
-        .GetAllProducts().Select(product => product.Category.Name).Contains(category.Name)).Select(category => category.Name);
+
+        var missingProducts = _categoryService.GetAllCategories().
+                            Where(category => !_productService.GetAllProducts().
+                            Select(product => product.Category.Name).
+                            Contains(category.Name)).
+                            Select(category => category.Name);
 
         if (missingProducts.Count() > 0)
         {
@@ -31,9 +34,6 @@ public class Categorys : ConsoleAppBase
             string filename = $"missingproducts-{today:yyyy/MM/dd}.txt";
             _fileService.SaveJson(inputTo, filename, missingProducts);
         }
-            _logger.LogInformation("exportjson ending");
-        
+        _logger.LogInformation("exportjson ending");
     }
-
-
 }
