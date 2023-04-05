@@ -1,8 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using ShopAdmin.Commands;
-using ShopGeneral.Data;
-using ShopGeneral.Infrastructure.Context;
 using ShopGeneral.Services;
 
 namespace ShopAdmin.Tests.Commands
@@ -32,9 +30,8 @@ namespace ShopAdmin.Tests.Commands
             //Act
             sut.ExportJson("");
 
-
             //Assert
-            _fileService.Verify(fileService => 
+            _fileService.Verify(fileService =>
                 fileService.SaveJson(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object>()), Times.Once);
         }
 
@@ -47,7 +44,6 @@ namespace ShopAdmin.Tests.Commands
             //Act
             sut.ExportJson(folder);
 
-
             //Assert
             _fileService.Verify(fileService =>
                 fileService.SaveJson(folder, It.IsAny<string>(), It.IsAny<object>()), Times.Once);
@@ -59,10 +55,9 @@ namespace ShopAdmin.Tests.Commands
             //Arrange
             string folder = "pricerunner";
             string today = DateTime.Now.ToString("yyyy/MM/dd") + ".txt";
-            
+
             //Act
             sut.ExportJson(folder);
-
 
             //Assert
             _fileService.Verify(fileService =>

@@ -27,7 +27,7 @@ namespace ShopAdmin.Tests.Commands
         }
 
         [TestMethod]
-        public void When_exporting_empty_category_then_file_service_is_called()
+        public void When_exporting_empty_category_filename_then_fileservice_is_called()
         {
             //Arrange
             var categories = new List<Category>
@@ -53,7 +53,7 @@ namespace ShopAdmin.Tests.Commands
         }
 
         [TestMethod]
-        public void When_exporting_products_then_correct_folder_is_called()
+        public void When_exporting_foldername_then_fileservice_is_called()
         {
             //Arrange
             var categories = new List<Category>
@@ -81,7 +81,7 @@ namespace ShopAdmin.Tests.Commands
         }
 
         [TestMethod]
-        public void When_exporting_products_then_file_is_saved_to_todays_date()
+        public void When_exporting_foldername_and_filename_then_fileservice_is_called()
         {
             //Arrange
             var categories = new List<Category>
@@ -110,7 +110,7 @@ namespace ShopAdmin.Tests.Commands
         }
 
         [TestMethod]
-        public void CheckEmpty_DoesNotSaveJson_WhenThereAreNoMissingProducts()
+        public void When_categories_list_is_empty_dont_call_fileservice()
         {
             // Arrange
             var categories = new List<Category>
@@ -138,7 +138,7 @@ namespace ShopAdmin.Tests.Commands
         }
 
         [TestMethod]
-        public void CheckEmpty_SavesJsonWithMissingProducts_WhenThereAreMissingProducts()
+        public void When_categories_list_is_not_empty_call_fileservice()
         {
             // Arrange
             var categories = new List<Category>

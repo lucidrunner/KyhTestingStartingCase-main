@@ -9,7 +9,7 @@ public class Products : ConsoleAppBase
     private readonly ILogger<Products> _logger;
     private readonly IProductService _productService;
     private readonly IFileService _fileService;
- 
+
     public Products(ILogger<Products> logger, IProductService productService, IFileService fileService)
     {
         _logger = logger;
@@ -35,7 +35,7 @@ public class Products : ConsoleAppBase
                 price = product.BasePrice,
                 images = new List<string>() { product.ImageUrl }
             };
-            
+
             exportedProducts.products.Add(exportedProduct);
         }
 
@@ -53,9 +53,7 @@ public class ExportedProducts
     public int total { get; set; }
     public int skip { get; set; } = 0;
     public int limit { get; set; } = 0;
-
 }
-
 
 public class ExportedProduct
 {
