@@ -7,13 +7,13 @@ namespace ShopGeneral.Services
 {
     public class EmailService : IEmailService
     {
-        private SmtpClient _client = new SmtpClient();
-        //TODO Ladda från config istället
-        private string _userName;
-        private string _userEmail;
-        private string _password;
-        private string _serverhost;
-        private int _port = 587;
+        private readonly SmtpClient _client = new SmtpClient();
+        private readonly string _userName;
+        private readonly string _userEmail;
+        private readonly string _password;
+        private readonly string _serverhost;
+        private readonly int _port;
+        private readonly bool _validConnection;
 
         public EmailService()
         {
@@ -21,24 +21,44 @@ namespace ShopGeneral.Services
                 .AddJsonFile("emailconnection.json")
                 .Build();
             
-            //TODO Hur vill man felhantera detta?
-            _userName = configuration.GetSection("EmailSettings")["UserName"];
-            _userEmail = configuration.GetSection("EmailSettings")["UserEmail"];
-            _password = configuration.GetSection("EmailSettings")["Password"];
-            _serverhost = configuration.GetSection("EmailSettings")["Serverhost"];
+            _userName = configuration.GetSection("EmailSettings")["UserName"] ?? string.Empty;
+            _userEmail = configuration.GetSection("EmailSettings")["UserEmail"] ?? string.Empty;
+            _password = configuration.GetSection("EmailSettings")["Password"] ?? string.Empty;
+            _serverhost = configuration.GetSection("EmailSettings")["Serverhost"] ?? string.Empty;
             var port = configuration.GetSection("EmailSettings")["Port"];
 
-            if (!int.TryParse(port, out _port))
+            if (_serverhost == string.Empty || _userName == string.Empty || _userEmail == string.Empty ||
+                !int.TryParse(port, out _port))
             {
-                //?
+                _validConnection = false;
+                return;
             }
-            
+            if (!MailboxAddress.TryParse(_userEmail, out MailboxAddress _))
+            {
+                _validConnection = false;
+                return;
+            }
+
+            _validConnection = true;
         }
 
-        private void Connect()
+        private bool Connect()
         {
-            _client.Connect(_serverhost, _port, false);
-            _client.Authenticate(_userEmail, _password);
+            if (!_validConnection)
+                return false;
+
+            try
+            {
+                _client.Connect(_serverhost, _port, false);
+                if (_password != null)
+                    _client.Authenticate(_userEmail, _password);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
         }
 
         private void Disconnect()
@@ -46,30 +66,40 @@ namespace ShopGeneral.Services
             _client.Disconnect(true);
         }
 
-        public void SendMessage(IEmailInfo emailInfo)
+        public List<IEmailInfo> SendMessages(List<IEmailInfo> emailsToSend)
         {
-            SendMessages(new List<IEmailInfo>(){emailInfo});
-        }
-
-        public void SendMessages(List<IEmailInfo> emailInfos)
-        {
-            Connect();
-
-            foreach (IEmailInfo emailInfo in emailInfos)
+            if (!Connect())
             {
-                var email = new MimeMessage();
-                email.From.Add(new MailboxAddress(_userName, _userEmail));
-                email.To.Add(new MailboxAddress(emailInfo.ReceiverName, emailInfo.ReceiverEmail));
-                email.Subject = emailInfo.Subject;
-                email.Body = new TextPart("plain")
+                return new List<IEmailInfo>();
+            }
+
+            var sentEmails = new List<IEmailInfo>();
+
+            foreach (IEmailInfo emailInfo in emailsToSend)
+            {
+                try
                 {
-                    Text = emailInfo.Message
-                };
-                
-                _client.Send(email);
+                    var email = new MimeMessage();
+                    email.From.Add(new MailboxAddress(_userName, _userEmail));
+                    email.To.Add(new MailboxAddress(emailInfo.ReceiverName, emailInfo.ReceiverEmail));
+                    email.Subject = emailInfo.Subject;
+                    email.Body = new TextPart("plain")
+                    {
+                        Text = emailInfo.Message
+                    };
+
+                    _client.Send(email);
+                    sentEmails.Add(emailInfo);
+                }
+                catch
+                {
+                    continue;
+                }
             }
 
             Disconnect();
+
+            return sentEmails;
         }
         
     }

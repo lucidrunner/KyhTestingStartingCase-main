@@ -26,23 +26,11 @@ public class EmailInfo : IEmailInfo
             return false;
         }
 
-        if (ReceiverEmail == null || !MailboxAddress.TryParse(ReceiverEmail, out MailboxAddress _))
+        if (string.IsNullOrWhiteSpace(ReceiverEmail) || !MailboxAddress.TryParse(ReceiverEmail, out MailboxAddress _))
         {
             return false;
         }
 
         return true;
     }
-}
-
-public interface IEmailInfo
-{
-    public string ReceiverName { get; }
-    public string ReceiverEmail { get; }
-
-    public string Subject { get; }
-
-    public string Message { get; }
-
-    public bool IsValid();
 }

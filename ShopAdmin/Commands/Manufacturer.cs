@@ -24,10 +24,10 @@ namespace ShopAdmin.Commands
         public void SendReport(int sendOnDate)
         {
             _logger.LogInformation("SendReport starting.");
-            //Koll så vi bara skickar på det insatta datumet, utkommenterat under utveckling
-            //if (sendOnDate != DateTime.Today.Day)
-            //    return;
-            
+
+            if (sendOnDate != DateTime.Today.Day)
+                return;
+
             var manufacturers = _manufacturerService.GetAllManufacturers();
             List<IEmailInfo> emails = new List<IEmailInfo>();
             
@@ -39,8 +39,8 @@ namespace ShopAdmin.Commands
                     emails.Add(email);
                 }
             }
-
-            _emailService.SendMessages(emails);
+            
+            var sent = _emailService.SendMessages(emails);
 
             _logger.LogInformation("SendReport ending.");
         }

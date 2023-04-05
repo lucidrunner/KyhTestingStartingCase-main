@@ -95,5 +95,63 @@ namespace ShopAdmin.Tests.Commands
             _emailService.Verify(service => service.SendMessages(
                 It.Is<List<IEmailInfo>>(emails => emails.Count == 0)), Times.Once);
         }
+
+        [TestMethod]
+        public void When_sending_several_emails_all_emails_are_sent()
+        {
+            //Arrange
+            ShopGeneral.Data.Manufacturer manufacturer = new ShopGeneral.Data.Manufacturer()
+            {
+                Name = "Test",
+                EmailReport = "info@bugatti.se"
+            };
+
+            List<ShopGeneral.Data.Manufacturer> testList = new()
+            {
+                manufacturer,
+                manufacturer,
+                manufacturer
+            };
+            _manufacturerService.Setup(service => service.GetAllManufacturers()).Returns(testList);
+
+            //Act
+            sut.SendReport(DateTime.Today.Day);
+
+            //Assert
+            _emailService.Verify(service => service.SendMessages(
+                It.Is<List<IEmailInfo>>(emails => emails.Count == 3)), Times.Once);
+        }
+
+        [TestMethod]
+        public void When_sending_several_emails_all_invalid_emails_are_not_sent()
+        {
+            //Arrange
+            ShopGeneral.Data.Manufacturer correct = new ShopGeneral.Data.Manufacturer()
+            {
+                Name = "Test",
+                EmailReport = "info@bugatti.se"
+            };
+
+            ShopGeneral.Data.Manufacturer incorrect = new ShopGeneral.Data.Manufacturer()
+            {
+                Name = "Test",
+                EmailReport = "infobuga  tti.se"
+            };
+
+            List<ShopGeneral.Data.Manufacturer> testList = new()
+            {
+                correct,
+                correct,
+                incorrect
+            };
+            _manufacturerService.Setup(service => service.GetAllManufacturers()).Returns(testList);
+
+            //Act
+            sut.SendReport(DateTime.Today.Day);
+
+            //Assert
+            _emailService.Verify(service => service.SendMessages(
+                It.Is<List<IEmailInfo>>(emails => emails.Count == 2)), Times.Once);
+        }
     }
 }
