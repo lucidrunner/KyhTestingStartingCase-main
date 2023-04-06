@@ -53,7 +53,7 @@ public class Products : ConsoleAppBase
         DateTime today = DateTime.Now;
         string fileName = $"missingimages-{today:yyyyMMdd}.txt";
         _fileService.SaveJson(inputTo, fileName, images);
-        _logger.LogInformation("ExportJson ending");
+        _logger.LogInformation("VerifyImage ending");
     }
 
 
