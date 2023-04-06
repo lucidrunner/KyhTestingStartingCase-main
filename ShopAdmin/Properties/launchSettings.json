@@ -8,6 +8,10 @@
       "commandName": "Project",
       "commandLineArgs": "products export-json --input-to pricerunner"
     },
+    "CheckEmpty": {
+      "commandName": "Project",
+      "commandLineArgs": "category check-empty --input-to category"
+      },
     "VerifyImage": {
       "commandName": "Project",
       "commandLineArgs": "products verify-image --input-to products"

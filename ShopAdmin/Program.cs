@@ -24,7 +24,9 @@ builder.ConfigureServices((ctx, services) =>
     services.AddTransient<IProductService, ProductService>();
     services.AddTransient<IPricingService, PricingService>();
     services.AddTransient<IFileService, FileService>();
+    services.AddTransient<ICategoryService, CategoryService>();
     services.AddTransient<DataInitializer>();
+    
     // Using Cysharp/ZLogger for logging to file
     //services.AddLogging(logging =>
     //{
