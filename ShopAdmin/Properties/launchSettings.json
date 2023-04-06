@@ -8,9 +8,19 @@
       "commandName": "Project",
       "commandLineArgs": "products export-json --input-to pricerunner"
     },
+
     "SendEmail": {
       "commandName": "Project",
       "commandLineArgs": "manufacturer send-report --send-on-date 3"
+},
+    "CheckEmpty": {
+      "commandName": "Project",
+      "commandLineArgs": "category check-empty --input-to category"
+      },
+    "VerifyImage": {
+      "commandName": "Project",
+      "commandLineArgs": "products verify-image --input-to products"
+
     }
   }
 }

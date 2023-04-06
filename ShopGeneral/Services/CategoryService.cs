@@ -14,4 +14,9 @@ public class CategoryService : ICategoryService
     {
         return _context.Categories.Take(cnt);
     }
+
+    public IEnumerable<Category> GetAllCategories()
+    {
+        return _context.Categories;
+    }
 }
