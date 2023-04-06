@@ -40,7 +40,7 @@ public class Products : ConsoleAppBase
         }
 
         DateTime today = DateTime.Now;
-        string fileName = $"{today:yyyy/MM/dd}.txt";
+        string fileName = $"{today:yyyyMMdd}.txt";
         _fileService.SaveJson(inputTo, fileName, exportedProducts);
         _logger.LogInformation("ExportJson ending");
     }

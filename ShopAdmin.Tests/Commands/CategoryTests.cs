@@ -9,7 +9,7 @@ namespace ShopAdmin.Tests.Commands
     [TestClass]
     public class CategorysTests
     {
-        private Categorys sut;
+        private Categories sut;
 
         private readonly Mock<ILogger<Products>> _logger;
         private readonly Mock<IProductService> _productService;
@@ -23,7 +23,7 @@ namespace ShopAdmin.Tests.Commands
             _fileService = new Mock<IFileService>();
             _categoryService = new Mock<ICategoryService>();
 
-            sut = new Categorys(_logger.Object, _productService.Object, _fileService.Object, _categoryService.Object);
+            sut = new Categories(_logger.Object, _productService.Object, _fileService.Object, _categoryService.Object);
         }
 
         [TestMethod]
