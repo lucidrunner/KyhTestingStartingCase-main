@@ -53,7 +53,7 @@ namespace ShopAdmin.Tests.Commands
         }
 
         [TestMethod]
-        public void When_exporting_foldername_then_fileservice_is_called()
+        public void When_exporting_foldername_then_fileservice_is_called_with_foldername()
         {
             //Arrange
             var categories = new List<Category>
@@ -81,7 +81,7 @@ namespace ShopAdmin.Tests.Commands
         }
 
         [TestMethod]
-        public void When_exporting_foldername_and_filename_then_fileservice_is_called()
+        public void When_exporting_foldername_and_filename_then_fileservice_is_called_with_foldername_and_filename()
         {
             //Arrange
             var categories = new List<Category>
