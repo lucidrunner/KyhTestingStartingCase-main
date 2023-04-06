@@ -18,19 +18,19 @@ public class Products : ConsoleAppBase
         _fileService = fileService;
     }
 
-    public void VerifyImage(string inputTo)
+    public void VerifyImage(string folder)
     {
         _logger.LogInformation("VerifyImage starting");
-        if(string.IsNullOrWhiteSpace(inputTo))
+        if (string.IsNullOrWhiteSpace(folder))
         {
             return;
         }
 
         var images = new List<int>();
         var allImages = _productService.GetAllProducts().ToList();
-        
+
         foreach (var image in allImages)
-            
+
         {
             if (!string.IsNullOrEmpty(image.ImageUrl))
             {
@@ -52,15 +52,15 @@ public class Products : ConsoleAppBase
         }
         DateTime today = DateTime.Now;
         string fileName = $"missingimages-{today:yyyyMMdd}.txt";
-        _fileService.SaveJson(inputTo, fileName, images);
+        _fileService.SaveJson(folder, fileName, images);
         _logger.LogInformation("VerifyImage ending");
     }
 
 
-    public void ExportJson(string inputTo)
+    public void ExportJson(string folder)
     {
         _logger.LogInformation("ExportJson starting");
-        if (string.IsNullOrWhiteSpace(inputTo))
+        if (string.IsNullOrWhiteSpace(folder))
         {
             return;
         }
@@ -86,7 +86,7 @@ public class Products : ConsoleAppBase
 
         DateTime today = DateTime.Now;
         string fileName = $"{today:yyyyMMdd}.txt";
-        _fileService.SaveJson(inputTo, fileName, exportedProducts);
+        _fileService.SaveJson(folder, fileName, exportedProducts);
         _logger.LogInformation("ExportJson ending");
     }
 }
