@@ -7,6 +7,10 @@
     "ExportJson": {
       "commandName": "Project",
       "commandLineArgs": "products export-json --input-to pricerunner"
+    },
+    "VerifyImage": {
+      "commandName": "Project",
+      "commandLineArgs": "products verify-image --input-to products"
     }
   }
 }

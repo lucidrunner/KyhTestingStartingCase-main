@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Net;
+using Microsoft.Extensions.Logging;
 using ShopGeneral.Data;
 using ShopGeneral.Services;
 
@@ -17,9 +18,53 @@ public class Products : ConsoleAppBase
         _fileService = fileService;
     }
 
+    public void VerifyImage(string inputTo)
+    {
+        _logger.LogInformation("VerifyImage starting");
+        if(string.IsNullOrWhiteSpace(inputTo))
+        {
+            return;
+        }
+
+        var images = new List<int>();
+        var allImages = _productService.GetAllProducts().ToList();
+        
+        foreach (var image in allImages)
+            
+        {
+            if (!string.IsNullOrEmpty(image.ImageUrl))
+            {
+                HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(image.ImageUrl);
+                request.Method = "HEAD";
+                try
+                {
+                    request.GetResponse();
+                }
+                catch
+                {
+                    images.Add(image.Id);
+                }
+            }
+            else
+            {
+                images.Add(image.Id);
+            }
+        }
+        DateTime today = DateTime.Now;
+        string fileName = $"missingimages-{today:yyyyMMdd}.txt";
+        _fileService.SaveJson(inputTo, fileName, images);
+        _logger.LogInformation("VerifyImage ending");
+    }
+
+
     public void ExportJson(string inputTo)
     {
         _logger.LogInformation("ExportJson starting");
+        if (string.IsNullOrWhiteSpace(inputTo))
+        {
+            return;
+        }
+
         var allProducts = _productService.GetAllProducts().ToList();
         var exportedProducts = new ExportedProducts();
         exportedProducts.total = allProducts.Count;
@@ -40,7 +85,7 @@ public class Products : ConsoleAppBase
         }
 
         DateTime today = DateTime.Now;
-        string fileName = $"{today:yyyy/MM/dd}.txt";
+        string fileName = $"{today:yyyyMMdd}.txt";
         _fileService.SaveJson(inputTo, fileName, exportedProducts);
         _logger.LogInformation("ExportJson ending");
     }
