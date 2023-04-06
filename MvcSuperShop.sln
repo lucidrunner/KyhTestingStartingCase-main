@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopAdmin", "ShopAdmin\Shop
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopGeneral", "ShopGeneral\ShopGeneral.csproj", "{98E606CB-C422-4485-A827-7949E7E9F451}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopAdmin.Tests", "ShopAdmin.Tests\ShopAdmin.Tests.csproj", "{28806E5B-CC69-4C49-86C3-281AD2097813}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopAdmin.Tests", "ShopAdmin.Tests\ShopAdmin.Tests.csproj", "{28806E5B-CC69-4C49-86C3-281AD2097813}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopGeneral.Tests", "ShopGeneral.Tests\ShopGeneral.Tests.csproj", "{EDFDB2BE-59CF-462D-8544-5EC03F40FDBC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{28806E5B-CC69-4C49-86C3-281AD2097813}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28806E5B-CC69-4C49-86C3-281AD2097813}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28806E5B-CC69-4C49-86C3-281AD2097813}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDFDB2BE-59CF-462D-8544-5EC03F40FDBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDFDB2BE-59CF-462D-8544-5EC03F40FDBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDFDB2BE-59CF-462D-8544-5EC03F40FDBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDFDB2BE-59CF-462D-8544-5EC03F40FDBC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

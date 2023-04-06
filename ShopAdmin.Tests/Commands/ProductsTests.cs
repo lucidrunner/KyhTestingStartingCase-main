@@ -63,5 +63,101 @@ namespace ShopAdmin.Tests.Commands
             _fileService.Verify(fileService =>
                 fileService.SaveJson(folder, today, It.IsAny<object>()), Times.Once);
         }
+
+        [TestMethod]
+        public void When_valid_images_no_missing_images_files_are_saved()
+        {
+            //Arrange
+            string folder = "Images";
+
+            Product testProduct = new Product()
+            {
+                Id = 1,
+                ImageUrl = "https://www.google.com"
+            };
+            var productList = new List<Product>() { testProduct };
+
+            _productService.Setup(service => service.GetAllProducts()).Returns(productList);
+
+            //Act
+            sut.VerifyImage(folder);
+
+            //Assert
+            _fileService.Verify(fileService =>
+                fileService.SaveJson(folder, It.IsAny<string>(), It.Is<IEnumerable<int>>(list => !list.Any())), Times.Once);
+        }
+
+        [TestMethod]
+        public void When_invalid_images_missing_images_file_is_created()
+        {
+            //Arrange
+            string folder = "Images";
+
+            Product testProduct = new Product()
+            {
+                Id = 1,
+                ImageUrl = ""
+            };
+            var productList = new List<Product>() { testProduct };
+
+            _productService.Setup(service => service.GetAllProducts()).Returns(productList);
+
+            //Act
+            sut.VerifyImage(folder);
+
+            //Assert
+            _fileService.Verify(fileService =>
+                fileService.SaveJson(folder, It.IsAny<string>(), It.Is<IEnumerable<int>>(list => list.Count() > 0)), Times.Once);
+        }
+
+
+        [TestMethod]
+        public void When_no_folder_set_should_not_save()
+        {
+            //Arrange
+            string folder = "";
+
+            Product testProduct = new Product()
+            {
+                Id = 1,
+                ImageUrl = ""
+            };
+            var productList = new List<Product>() { testProduct };
+
+            _productService.Setup(service => service.GetAllProducts()).Returns(productList);
+
+            //Act
+            sut.VerifyImage(folder);
+
+            //Assert
+            _fileService.Verify(fileService =>
+                fileService.SaveJson(folder, It.IsAny<string>(), It.IsAny<object>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void When_saving_missing_images_file_name_is_correct()
+        {
+            //Arrange
+            string folder = "Images";
+            string fileName = $"missingimages-{DateTime.Today.ToString("yyyyMMdd")}.txt";
+            Product testProduct = new Product()
+            {
+                Id = 1,
+                ImageUrl = ""
+            };
+            var productList = new List<Product>() { testProduct };
+
+            _productService.Setup(service => service.GetAllProducts()).Returns(productList);
+            
+
+
+            //Act
+            sut.VerifyImage(folder);
+
+            //Assert
+            _fileService.Verify(fileService =>
+                fileService.SaveJson(folder, fileName, It.IsAny<object>()), Times.Once);
+        }
     }
+    
 }
