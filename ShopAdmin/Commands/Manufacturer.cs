@@ -58,18 +58,18 @@ namespace ShopAdmin.Commands
         
         private void LogUnsentEmails(List<IEmailInfo> allEmails, List<IEmailInfo> sentEmails)
         {
-            var unsent = allEmails.Where(email => !sentEmails.Contains(email)).ToList();
-            if (unsent.Count == 0)
+            var unsentEmails = allEmails.Where(email => !sentEmails.Contains(email)).ToList();
+            if (unsentEmails.Count == 0)
                 return;
 
             var unsentEmailMessage = new StringBuilder();
             unsentEmailMessage.AppendLine("Unsent Emails");
-            foreach (var unsentEmail in unsent)
+            foreach (var unsentEmail in unsentEmails)
             {
                 unsentEmailMessage.AppendLine($"{unsentEmail.ReceiverName} - {unsentEmail.ReceiverEmail}");
             }
 
-            unsentEmailMessage.AppendLine($"Total number of unsent emails {unsent.Count}/{allEmails.Count}");
+            unsentEmailMessage.AppendLine($"Total number of unsent emails {unsentEmails.Count}/{allEmails.Count}");
 
             _logger.LogWarning(unsentEmailMessage.ToString());
         }
