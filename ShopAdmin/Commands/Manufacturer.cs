@@ -63,7 +63,7 @@ namespace ShopAdmin.Commands
                 return;
 
             var unsentEmailMessage = new StringBuilder();
-            unsentEmailMessage.AppendLine("Unsent emails");
+            unsentEmailMessage.AppendLine("Unsent Emails");
             foreach (var unsentEmail in unsent)
             {
                 unsentEmailMessage.AppendLine($"{unsentEmail.ReceiverName} - {unsentEmail.ReceiverEmail}");
@@ -71,7 +71,7 @@ namespace ShopAdmin.Commands
 
             unsentEmailMessage.AppendLine($"Total number of unsent emails {unsent.Count}/{allEmails.Count}");
 
-            _logger.LogInformation(unsentEmailMessage.ToString());
+            _logger.LogWarning(unsentEmailMessage.ToString());
         }
     }
 }
