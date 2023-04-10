@@ -153,5 +153,32 @@ namespace ShopAdmin.Tests.Commands
             _emailService.Verify(service => service.SendMessages(
                 It.Is<List<IEmailInfo>>(emails => emails.Count == 2)), Times.Once);
         }
+
+        [TestMethod]
+        public void When_emails_failed_sending_it_is_logged()
+        {
+            //Arrange
+            ShopGeneral.Data.Manufacturer manufacturer = new ShopGeneral.Data.Manufacturer()
+            {
+                Name = "Test",
+                EmailReport = "info@bugatti.se"
+            };
+            
+
+            List<ShopGeneral.Data.Manufacturer> testList = new()
+            {
+                manufacturer,
+                manufacturer,
+            };
+
+            _manufacturerService.Setup(service => service.GetAllManufacturers()).Returns(testList);
+            _emailService.Setup(service => service.SendMessages(It.IsAny<List<IEmailInfo>>())).Returns(new List<IEmailInfo>());
+
+            //Act
+            sut.SendReport(DateTime.Today.Day);
+
+            //Assert
+            _logger.Verify(logger => logger.LogWarning(It.IsAny<string>()), Times.Once);
+        }
     }
 }
