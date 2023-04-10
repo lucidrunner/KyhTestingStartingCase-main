@@ -178,7 +178,14 @@ namespace ShopAdmin.Tests.Commands
             sut.SendReport(DateTime.Today.Day);
 
             //Assert
-            _logger.Verify(logger => logger.LogWarning(It.IsAny<string>()), Times.Once);
+            _logger.Verify(
+            logger => logger.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                It.IsAny<Exception>(),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+            Times.Once);
         }
     }
 }
