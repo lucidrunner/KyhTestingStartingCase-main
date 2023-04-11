@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using ShopGeneral.Services;
 
 namespace ShopAdmin.Commands
@@ -18,7 +13,8 @@ namespace ShopAdmin.Commands
             _logger = logger;
             _agreementService = agreementService;
         }
-        public void Expires( int days)
+
+        public void Expires(int days)
         {
             _logger.LogInformation("Expires starting");
             foreach (var agreement in _agreementService.GetActiveAgreements()
@@ -29,6 +25,5 @@ namespace ShopAdmin.Commands
             }
             _logger.LogInformation("Expires ending");
         }
-        
     }
 }

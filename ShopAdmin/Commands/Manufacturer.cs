@@ -1,8 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ShopGeneral.Model;
 using ShopGeneral.Services;
 
@@ -21,16 +17,16 @@ namespace ShopAdmin.Commands
             _emailService = emailService;
         }
 
-        public void SendReport(int sendOnDate)
+        public void SendReport(int sendOnDay)
         {
             _logger.LogInformation("SendReport starting.");
 
-            if (sendOnDate != DateTime.Today.Day)
+            if (sendOnDay != DateTime.Today.Day)
                 return;
 
             var manufacturers = _manufacturerService.GetAllManufacturers();
             List<IEmailInfo> emails = new List<IEmailInfo>();
-            
+
             foreach (var manufacturer in manufacturers)
             {
                 var email = CreateReportEmail(manufacturer);
@@ -39,7 +35,7 @@ namespace ShopAdmin.Commands
                     emails.Add(email);
                 }
             }
-            
+
             var sent = _emailService.SendMessages(emails);
 
             _logger.LogInformation("SendReport ending.");
