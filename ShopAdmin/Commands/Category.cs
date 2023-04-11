@@ -18,7 +18,7 @@ public class Categories : ConsoleAppBase
         _categoryService = categoryService;
     }
 
-    public void CheckEmpty(string inputTo)
+    public void CheckEmpty(string folder)
     {
         _logger.LogInformation("CheckEmpty starting");
 
@@ -32,7 +32,7 @@ public class Categories : ConsoleAppBase
         {
             DateTime today = DateTime.Now;
             string filename = $"missingproducts-{today:yyyyMMdd}.txt";
-            _fileService.SaveJson(inputTo, filename, missingProducts);
+            _fileService.SaveJson(folder, filename, missingProducts);
         }
         _logger.LogInformation("CheckEmpty ending");
     }
