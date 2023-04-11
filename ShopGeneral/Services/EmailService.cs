@@ -73,7 +73,7 @@ public class EmailService : IEmailService
         _client.Disconnect(true);
     }
 
-    public List<IEmailMessage> SendMessages(List<IEmailMessage> emailsToSend)
+    public IEnumerable<IEmailMessage> SendMessages(IEnumerable<IEmailMessage> emailsToSend)
     {
         if (!Connect())
         {

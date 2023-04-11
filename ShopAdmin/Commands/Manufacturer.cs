@@ -38,7 +38,7 @@ public class Manufacturer : ConsoleAppBase
         }
 
         var sentEmails = _emailService.SendMessages(createdEmails);
-        LogUnsentEmails(createdEmails, sentEmails);
+        LogUnsentEmails(createdEmails, sentEmails.ToList());
 
         _logger.LogInformation("SendReport ending.");
     }
@@ -49,8 +49,8 @@ public class Manufacturer : ConsoleAppBase
         string address = manufacturer.EmailReport;
         string report = "";
 
-        var emailInfo = new EmailMessage(name, address, "Försäljningsrapport", report);
-        return emailInfo;
+        var reportEmail = new EmailMessage(name, address, "Försäljningsrapport", report);
+        return reportEmail;
     }
 
     private void LogUnsentEmails(List<IEmailMessage> allEmails, List<IEmailMessage> sentEmails)

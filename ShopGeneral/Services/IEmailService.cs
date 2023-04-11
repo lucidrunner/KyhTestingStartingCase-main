@@ -4,6 +4,6 @@ namespace ShopGeneral.Services;
 
 public interface IEmailService
 {
-    List<IEmailMessage> SendMessages(List<IEmailMessage> emailsToSend);
+    IEnumerable<IEmailMessage> SendMessages(IEnumerable<IEmailMessage> emailsToSend);
 
 }
