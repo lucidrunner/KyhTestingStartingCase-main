@@ -1,77 +1,73 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ShopGeneral.Model;
 using ShopGeneral.Services;
 using System.Text;
 
-namespace ShopAdmin.Commands
+namespace ShopAdmin.Commands;
+
+public class Manufacturer : ConsoleAppBase
 {
-    public class Manufacturer : ConsoleAppBase
+    private readonly ILogger<Manufacturer> _logger;
+    private readonly IManufacturerService _manufacturerService;
+    private readonly IEmailService _emailService;
+
+    public Manufacturer(ILogger<Manufacturer> logger, IManufacturerService manufacturerService, IEmailService emailService)
     {
-        private readonly ILogger<Manufacturer> _logger;
-        private readonly IManufacturerService _manufacturerService;
-        private readonly IEmailService _emailService;
+        _logger = logger;
+        _manufacturerService = manufacturerService;
+        _emailService = emailService;
+    }
 
-        public Manufacturer(ILogger<Manufacturer> logger, IManufacturerService manufacturerService, IEmailService emailService)
+    public void SendReport(int sendOnDate)
+    {
+        _logger.LogInformation("SendReport starting.");
+
+        if (sendOnDate != DateTime.Today.Day)
+            return;
+
+        var manufacturers = _manufacturerService.GetAllManufacturers();
+        var createdEmails = new List<IEmailMessage>();
+
+        foreach (var manufacturer in manufacturers)
         {
-            _logger = logger;
-            _manufacturerService = manufacturerService;
-            _emailService = emailService;
-        }
-
-        public void SendReport(int sendOnDate)
-        {
-            _logger.LogInformation("SendReport starting.");
-
-            if (sendOnDate != DateTime.Today.Day)
-                return;
-
-            var manufacturers = _manufacturerService.GetAllManufacturers();
-            List<IEmailInfo> emails = new List<IEmailInfo>();
-            
-            foreach (var manufacturer in manufacturers)
+            var email = CreateReportEmail(manufacturer);
+            if (email.IsValid())
             {
-                var email = CreateReportEmail(manufacturer);
-                if (email.IsValid())
-                {
-                    emails.Add(email);
-                }
+                createdEmails.Add(email);
             }
-
-            var sentEmails = _emailService.SendMessages(emails);
-            LogUnsentEmails(emails, sentEmails);
-
-            _logger.LogInformation("SendReport ending.");
         }
 
-        private IEmailInfo CreateReportEmail(ShopGeneral.Data.Manufacturer manufacturer)
+        var sentEmails = _emailService.SendMessages(createdEmails);
+        LogUnsentEmails(createdEmails, sentEmails);
+
+        _logger.LogInformation("SendReport ending.");
+    }
+
+    private IEmailMessage CreateReportEmail(ShopGeneral.Data.Manufacturer manufacturer)
+    {
+        string name = manufacturer.Name;
+        string address = manufacturer.EmailReport;
+        string report = "";
+
+        var emailInfo = new EmailMessage(name, address, "Försäljningsrapport", report);
+        return emailInfo;
+    }
+
+    private void LogUnsentEmails(List<IEmailMessage> allEmails, List<IEmailMessage> sentEmails)
+    {
+        var unsentEmails = allEmails.Where(email => !sentEmails.Contains(email)).ToList();
+        if (unsentEmails.Count == 0)
+            return;
+
+        var unsentEmailMessage = new StringBuilder();
+        unsentEmailMessage.AppendLine("Unsent Emails");
+        foreach (var unsentEmail in unsentEmails)
         {
-            string name = manufacturer.Name;
-            string email = manufacturer.EmailReport;
-            string report = "";
-            EmailInfo emailInfo = new EmailInfo(name, email, "Försäljningsrapport", report);
-            return emailInfo;
+            unsentEmailMessage.AppendLine($"{unsentEmail.ReceiverName} - {unsentEmail.ReceiverEmailAddress}");
         }
-        
-        private void LogUnsentEmails(List<IEmailInfo> allEmails, List<IEmailInfo> sentEmails)
-        {
-            var unsentEmails = allEmails.Where(email => !sentEmails.Contains(email)).ToList();
-            if (unsentEmails.Count == 0)
-                return;
 
-            var unsentEmailMessage = new StringBuilder();
-            unsentEmailMessage.AppendLine("Unsent Emails");
-            foreach (var unsentEmail in unsentEmails)
-            {
-                unsentEmailMessage.AppendLine($"{unsentEmail.ReceiverName} - {unsentEmail.ReceiverEmail}");
-            }
+        unsentEmailMessage.AppendLine($"Total number of unsent emails {unsentEmails.Count}/{allEmails.Count}");
 
-            unsentEmailMessage.AppendLine($"Total number of unsent emails {unsentEmails.Count}/{allEmails.Count}");
-
-            _logger.LogWarning(unsentEmailMessage.ToString());
-        }
+        _logger.LogWarning(unsentEmailMessage.ToString());
     }
 }

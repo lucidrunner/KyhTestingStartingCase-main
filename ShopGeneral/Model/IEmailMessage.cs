@@ -1,9 +1,9 @@
 ﻿namespace ShopGeneral.Model;
 
-public interface IEmailInfo
+public interface IEmailMessage
 {
     public string ReceiverName { get; }
-    public string ReceiverEmail { get; }
+    public string ReceiverEmailAddress { get; }
 
     public string Subject { get; }
 
