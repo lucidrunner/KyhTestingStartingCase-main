@@ -14,7 +14,7 @@
     },
     "CheckEmpty": {
       "commandName": "Project",
-      "commandLineArgs": "categories check-empty --folder category"
+      "commandLineArgs": "category check-empty --folder category"
     },
     "VerifyImage": {
       "commandName": "Project",

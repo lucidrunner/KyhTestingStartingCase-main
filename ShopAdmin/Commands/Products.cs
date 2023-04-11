@@ -27,7 +27,7 @@ public class Products : ConsoleAppBase
         }
 
         var images = new List<int>();
-        var allImages = _productService.GetAllProducts().ToList();
+        var allImages = _productService.GetAllProducts();
 
         foreach (var image in allImages)
 
@@ -50,9 +50,16 @@ public class Products : ConsoleAppBase
                 images.Add(image.Id);
             }
         }
-        DateTime today = DateTime.Now;
-        string fileName = $"missingimages-{today:yyyyMMdd}.txt";
-        _fileService.SaveJson(folder, fileName, images);
+
+        if (images.Count > 0)
+        {
+            DateTime today = DateTime.Now;
+            string fileName = $"missingimages-{today:yyyyMMdd}.txt";
+            _fileService.SaveJson(folder, fileName, images);
+        }
+        
+
+
         _logger.LogInformation("VerifyImage ending");
     }
 

@@ -2,19 +2,19 @@
 
 namespace ShopGeneral.Model;
 
-public class EmailInfo : IEmailInfo
+public class EmailMessage : IEmailMessage
 {
     public string ReceiverName { get; }
-    public string ReceiverEmail { get; }
+    public string ReceiverEmailAddress { get; }
 
     public string Subject { get;  }
 
     public string Message { get;  }
 
-    public EmailInfo(string receiverName, string receiverEmail, string subject, string message)
+    public EmailMessage(string receiverName, string receiverEmailAddress, string subject, string message)
     {
         ReceiverName = receiverName;
-        ReceiverEmail = receiverEmail;
+        ReceiverEmailAddress = receiverEmailAddress;
         Subject = subject;
         Message = message;
     }
@@ -26,7 +26,7 @@ public class EmailInfo : IEmailInfo
             return false;
         }
 
-        if (string.IsNullOrWhiteSpace(ReceiverEmail) || !MailboxAddress.TryParse(ReceiverEmail, out MailboxAddress _))
+        if (string.IsNullOrWhiteSpace(ReceiverEmailAddress) || !MailboxAddress.TryParse(ReceiverEmailAddress, out _))
         {
             return false;
         }
