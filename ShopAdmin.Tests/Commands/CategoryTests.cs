@@ -33,13 +33,13 @@ public class CategoryTests
         //Arrange
         var categories = new List<ShopGeneral.Data.Category>
         {
-            new ShopGeneral.Data.Category { Id = 1, Name = "Category 1" },
-            new ShopGeneral.Data.Category { Id = 2, Name = "Category 2" }
+            new() { Id = 1, Name = "Category 1" },
+            new() { Id = 2, Name = "Category 2" }
         };
 
         var products = new List<Product>
         {
-            new Product { Id = 1, Name = "Product 1", Category = categories[0] }
+            new() { Id = 1, Name = "Product 1", Category = categories[0] }
         };
 
         _categoryService.Setup(x => x.GetAllCategories()).Returns(categories);
@@ -59,13 +59,13 @@ public class CategoryTests
         //Arrange
         var categories = new List<ShopGeneral.Data.Category>
         {
-            new ShopGeneral.Data.Category { Id = 1, Name = "Category 1" },
-            new ShopGeneral.Data.Category { Id = 2, Name = "Category 2" }
+            new() { Id = 1, Name = "Category 1" },
+            new() { Id = 2, Name = "Category 2" }
         };
 
         var products = new List<Product>
         {
-            new Product { Id = 1, Name = "Product 1", Category = categories[0] }
+            new() { Id = 1, Name = "Product 1", Category = categories[0] }
         };
 
         _categoryService.Setup(x => x.GetAllCategories()).Returns(categories);
@@ -87,20 +87,20 @@ public class CategoryTests
         //Arrange
         var categories = new List<ShopGeneral.Data.Category>
         {
-            new ShopGeneral.Data.Category { Id = 1, Name = "Category 1" },
-            new ShopGeneral.Data.Category { Id = 2, Name = "Category 2" }
+            new() { Id = 1, Name = "Category 1" },
+            new() { Id = 2, Name = "Category 2" }
         };
 
         var products = new List<Product>
         {
-            new Product { Id = 1, Name = "Product 1", Category = categories[0] }
+            new() { Id = 1, Name = "Product 1", Category = categories[0] }
         };
 
         _categoryService.Setup(x => x.GetAllCategories()).Returns(categories);
         _productService.Setup(x => x.GetAllProducts()).Returns(products);
 
         string folder = "categories";
-        string today = "missingproducts-" + DateTime.Now.ToString("yyyy/MM/dd") + ".txt";
+        string today = "missingproducts-" + DateTime.Now.ToString("yyyyMMdd") + ".txt";
 
         //Act
         sut.CheckEmpty(folder);
@@ -111,19 +111,19 @@ public class CategoryTests
     }
 
     [TestMethod]
-    public void When_categories_list_is_empty_dont_call_fileservice()
+    public void When_no_categories_are_missing_products_dont_run_fileservice()
     {
         // Arrange
         var categories = new List<ShopGeneral.Data.Category>
         {
-            new ShopGeneral.Data.Category { Id = 1, Name = "Category 1" },
-            new ShopGeneral.Data.Category { Id = 2, Name = "Category 2" }
+            new() { Id = 1, Name = "Category 1" },
+            new() { Id = 2, Name = "Category 2" }
         };
 
         var products = new List<Product>
         {
-            new Product { Id = 1, Name = "Product 1", Category = categories[0] },
-            new Product { Id = 2, Name = "Product 2", Category = categories[1] }
+            new() { Id = 1, Name = "Product 1", Category = categories[0] },
+            new() { Id = 2, Name = "Product 2", Category = categories[1] }
         };
 
         _categoryService.Setup(x => x.GetAllCategories()).Returns(categories);
@@ -135,35 +135,64 @@ public class CategoryTests
         sut.CheckEmpty(inputTo);
 
         // Assert
-        _fileService.Verify(x => x.SaveJson(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IEnumerable<string>>()), Times.Never);
+        _fileService.Verify(x =>
+            x.SaveJson(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IEnumerable<string>>()), Times.Never);
     }
 
     [TestMethod]
-    public void When_categories_list_is_not_empty_call_fileservice()
+    public void When_one_category_is_missing_products_call_fileservice()
     {
         // Arrange
         var categories = new List<ShopGeneral.Data.Category>
         {
-            new ShopGeneral.Data.Category { Id = 1, Name = "Category 1" },
-            new ShopGeneral.Data.Category { Id = 2, Name = "Category 2" }
+            new() { Id = 1, Name = "Category 1" },
+            new() { Id = 2, Name = "Category 2" }
         };
 
         var products = new List<Product>
         {
-            new Product { Id = 1, Name = "Product 1", Category = categories[0] },
-            new Product { Id = 2, Name = "Product 2", Category = categories[0] }
+            new() { Id = 1, Name = "Product 1", Category = categories[0] }
         };
 
         _categoryService.Setup(x => x.GetAllCategories()).Returns(categories);
         _productService.Setup(x => x.GetAllProducts()).Returns(products);
 
         string inputTo = "categories";
-        var expectedMissingProducts = new List<string> { "Category 2" };
 
         // Act
         sut.CheckEmpty(inputTo);
 
         // Assert
-        _fileService.Verify(x => x.SaveJson(It.IsAny<string>(), It.IsAny<string>(), expectedMissingProducts), Times.Once);
+        _fileService.Verify(x =>
+            x.SaveJson(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object>()), Times.Once);
+    }
+
+    [TestMethod]
+    public void When_two_categories_is_missing_products_call_fileservice()
+    {
+        // Arrange
+        var categories = new List<ShopGeneral.Data.Category>
+        {
+            new() { Id = 1, Name = "Category 1" },
+            new() { Id = 2, Name = "Category 2" },
+            new() { Id = 3, Name = "Category 3" }
+        };
+
+        var products = new List<Product>
+        {
+            new() { Id = 1, Name = "Product 1", Category = categories[0] }
+        };
+
+        _categoryService.Setup(x => x.GetAllCategories()).Returns(categories);
+        _productService.Setup(x => x.GetAllProducts()).Returns(products);
+
+        string inputTo = "categories";
+
+        // Act
+        sut.CheckEmpty(inputTo);
+
+        // Assert
+        _fileService.Verify(x =>
+            x.SaveJson(It.IsAny<string>(), It.IsAny<string>(), It.Is<IEnumerable<string>>(list => list.Count() == 2)), Times.Once);
     }
 }

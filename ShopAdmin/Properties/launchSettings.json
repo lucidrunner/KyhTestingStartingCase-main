@@ -1,26 +1,24 @@
 {
   "profiles": {
-    "ShopAdmin": {
+    "AgreementExpire": {
       "commandName": "Project",
-      "commandLineArgs": "agreement test --input pricerunner"
+      "commandLineArgs": "agreement expires --days 30"
     },
     "ExportJson": {
       "commandName": "Project",
-      "commandLineArgs": "products export-json --input-to pricerunner"
+      "commandLineArgs": "products export-json --folder pricerunner"
     },
-
     "SendEmail": {
       "commandName": "Project",
-      "commandLineArgs": "manufacturer send-report --send-on-date 3"
-},
+      "commandLineArgs": "manufacturer send-report --send-on-day 3"
+    },
     "CheckEmpty": {
       "commandName": "Project",
-      "commandLineArgs": "category check-empty --input-to category"
-      },
+      "commandLineArgs": "categories check-empty --folder category"
+    },
     "VerifyImage": {
       "commandName": "Project",
-      "commandLineArgs": "products verify-image --input-to products"
-
+      "commandLineArgs": "products verify-image --folder products"
     }
   }
 }
