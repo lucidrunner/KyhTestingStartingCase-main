@@ -18,12 +18,15 @@ public class Manufacturer : ConsoleAppBase
         _emailService = emailService;
     }
 
-        public void SendReport(int sendOnDay)
-        {
-            _logger.LogInformation("SendReport starting.");
+    public void SendReport(int sendOnDay)
+    {
+        _logger.LogInformation("SendReport starting.");
 
-            if (sendOnDay != DateTime.Today.Day)
-                return;
+        if (sendOnDay != DateTime.Today.Day)
+        {
+            _logger.LogInformation("SendReport ending.");
+            return;
+        }
 
         var manufacturers = _manufacturerService.GetAllManufacturers();
         var createdEmails = new List<IEmailMessage>();
