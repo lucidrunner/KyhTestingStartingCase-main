@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using ShopGeneral.Model;
 using ShopGeneral.Services;
+using System.Text;
 
 namespace ShopAdmin.Commands
 {
@@ -36,7 +37,8 @@ namespace ShopAdmin.Commands
                 }
             }
 
-            var sent = _emailService.SendMessages(emails);
+            var sentEmails = _emailService.SendMessages(emails);
+            LogUnsentEmails(emails, sentEmails);
 
             _logger.LogInformation("SendReport ending.");
         }
@@ -48,6 +50,24 @@ namespace ShopAdmin.Commands
             string report = "";
             EmailInfo emailInfo = new EmailInfo(name, email, "Försäljningsrapport", report);
             return emailInfo;
+        }
+        
+        private void LogUnsentEmails(List<IEmailInfo> allEmails, List<IEmailInfo> sentEmails)
+        {
+            var unsentEmails = allEmails.Where(email => !sentEmails.Contains(email)).ToList();
+            if (unsentEmails.Count == 0)
+                return;
+
+            var unsentEmailMessage = new StringBuilder();
+            unsentEmailMessage.AppendLine("Unsent Emails");
+            foreach (var unsentEmail in unsentEmails)
+            {
+                unsentEmailMessage.AppendLine($"{unsentEmail.ReceiverName} - {unsentEmail.ReceiverEmail}");
+            }
+
+            unsentEmailMessage.AppendLine($"Total number of unsent emails {unsentEmails.Count}/{allEmails.Count}");
+
+            _logger.LogWarning(unsentEmailMessage.ToString());
         }
     }
 }

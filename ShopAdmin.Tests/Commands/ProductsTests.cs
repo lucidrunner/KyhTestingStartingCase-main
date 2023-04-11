@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using ShopAdmin.Commands;
+using ShopGeneral.Data;
 using ShopGeneral.Services;
 
 namespace ShopAdmin.Tests.Commands

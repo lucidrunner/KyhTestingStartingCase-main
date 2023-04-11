@@ -35,6 +35,7 @@ namespace ShopAdmin.Tests.Commands
         public void When_send_date_is_today_sends_email()
         {
             var testDate = DateTime.Today.Day;
+            _emailService.Setup(service => service.SendMessages(It.IsAny<List<IEmailInfo>>())).Returns(new List<IEmailInfo>());
 
             sut.SendReport(testDate);
 
@@ -62,7 +63,8 @@ namespace ShopAdmin.Tests.Commands
             };
             List<ShopGeneral.Data.Manufacturer> testList = new(){manufacturer};
             _manufacturerService.Setup(service => service.GetAllManufacturers()).Returns(testList);
-            
+            _emailService.Setup(service => service.SendMessages(It.IsAny<List<IEmailInfo>>())).Returns(new List<IEmailInfo>());
+
 
 
             //Act
@@ -113,6 +115,7 @@ namespace ShopAdmin.Tests.Commands
                 manufacturer
             };
             _manufacturerService.Setup(service => service.GetAllManufacturers()).Returns(testList);
+            _emailService.Setup(service => service.SendMessages(It.IsAny<List<IEmailInfo>>())).Returns(new List<IEmailInfo>());
 
             //Act
             sut.SendReport(DateTime.Today.Day);
@@ -145,6 +148,7 @@ namespace ShopAdmin.Tests.Commands
                 incorrect
             };
             _manufacturerService.Setup(service => service.GetAllManufacturers()).Returns(testList);
+            _emailService.Setup(service => service.SendMessages(It.IsAny<List<IEmailInfo>>())).Returns(new List<IEmailInfo>());
 
             //Act
             sut.SendReport(DateTime.Today.Day);
@@ -152,6 +156,40 @@ namespace ShopAdmin.Tests.Commands
             //Assert
             _emailService.Verify(service => service.SendMessages(
                 It.Is<List<IEmailInfo>>(emails => emails.Count == 2)), Times.Once);
+        }
+
+        [TestMethod]
+        public void When_emails_failed_sending_it_is_logged()
+        {
+            //Arrange
+            ShopGeneral.Data.Manufacturer manufacturer = new ShopGeneral.Data.Manufacturer()
+            {
+                Name = "Test",
+                EmailReport = "info@bugatti.se"
+            };
+            
+
+            List<ShopGeneral.Data.Manufacturer> testList = new()
+            {
+                manufacturer,
+                manufacturer,
+            };
+
+            _manufacturerService.Setup(service => service.GetAllManufacturers()).Returns(testList);
+            _emailService.Setup(service => service.SendMessages(It.IsAny<List<IEmailInfo>>())).Returns(new List<IEmailInfo>());
+
+            //Act
+            sut.SendReport(DateTime.Today.Day);
+
+            //Assert
+            _logger.Verify(
+            logger => logger.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.IsAny<It.IsAnyType>(),
+                It.IsAny<Exception>(),
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+            Times.Once);
         }
     }
 }
