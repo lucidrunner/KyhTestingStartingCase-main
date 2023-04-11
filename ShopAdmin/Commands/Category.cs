@@ -3,14 +3,14 @@ using ShopGeneral.Services;
 
 namespace ShopAdmin.Commands;
 
-public class Categories : ConsoleAppBase
+public class Category : ConsoleAppBase
 {
     private readonly ILogger<Products> _logger;
     private readonly IProductService _productService;
     private readonly IFileService _fileService;
     private readonly ICategoryService _categoryService;
 
-    public Categories(ILogger<Products> logger, IProductService productService, IFileService fileService, ICategoryService categoryService)
+    public Category(ILogger<Products> logger, IProductService productService, IFileService fileService, ICategoryService categoryService)
     {
         _logger = logger;
         _productService = productService;

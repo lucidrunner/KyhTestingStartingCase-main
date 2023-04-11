@@ -3,37 +3,38 @@ using Moq;
 using ShopAdmin.Commands;
 using ShopGeneral.Data;
 using ShopGeneral.Services;
+using Category = ShopAdmin.Commands.Category;
 
 namespace ShopAdmin.Tests.Commands;
 
 [TestClass]
-public class CategorysTests
+public class CategoryTests
 {
-    private Categories sut;
+    private Category sut;
 
     private readonly Mock<ILogger<Products>> _logger;
     private readonly Mock<IProductService> _productService;
     private readonly Mock<IFileService> _fileService;
     private readonly Mock<ICategoryService> _categoryService;
 
-    public CategorysTests()
+    public CategoryTests()
     {
         _logger = new Mock<ILogger<Products>>();
         _productService = new Mock<IProductService>();
         _fileService = new Mock<IFileService>();
         _categoryService = new Mock<ICategoryService>();
 
-        sut = new Categories(_logger.Object, _productService.Object, _fileService.Object, _categoryService.Object);
+        sut = new Category(_logger.Object, _productService.Object, _fileService.Object, _categoryService.Object);
     }
 
     [TestMethod]
     public void When_exporting_empty_category_filename_then_fileservice_is_called()
     {
         //Arrange
-        var categories = new List<Category>
+        var categories = new List<ShopGeneral.Data.Category>
         {
-            new Category { Id = 1, Name = "Category 1" },
-            new Category { Id = 2, Name = "Category 2" }
+            new ShopGeneral.Data.Category { Id = 1, Name = "Category 1" },
+            new ShopGeneral.Data.Category { Id = 2, Name = "Category 2" }
         };
 
         var products = new List<Product>
@@ -56,10 +57,10 @@ public class CategorysTests
     public void When_exporting_foldername_then_fileservice_is_called_with_foldername()
     {
         //Arrange
-        var categories = new List<Category>
+        var categories = new List<ShopGeneral.Data.Category>
         {
-            new Category { Id = 1, Name = "Category 1" },
-            new Category { Id = 2, Name = "Category 2" }
+            new ShopGeneral.Data.Category { Id = 1, Name = "Category 1" },
+            new ShopGeneral.Data.Category { Id = 2, Name = "Category 2" }
         };
 
         var products = new List<Product>
@@ -84,10 +85,10 @@ public class CategorysTests
     public void When_exporting_foldername_and_filename_then_fileservice_is_called_with_foldername_and_filename()
     {
         //Arrange
-        var categories = new List<Category>
+        var categories = new List<ShopGeneral.Data.Category>
         {
-            new Category { Id = 1, Name = "Category 1" },
-            new Category { Id = 2, Name = "Category 2" }
+            new ShopGeneral.Data.Category { Id = 1, Name = "Category 1" },
+            new ShopGeneral.Data.Category { Id = 2, Name = "Category 2" }
         };
 
         var products = new List<Product>
@@ -113,10 +114,10 @@ public class CategorysTests
     public void When_categories_list_is_empty_dont_call_fileservice()
     {
         // Arrange
-        var categories = new List<Category>
+        var categories = new List<ShopGeneral.Data.Category>
         {
-            new Category { Id = 1, Name = "Category 1" },
-            new Category { Id = 2, Name = "Category 2" }
+            new ShopGeneral.Data.Category { Id = 1, Name = "Category 1" },
+            new ShopGeneral.Data.Category { Id = 2, Name = "Category 2" }
         };
 
         var products = new List<Product>
@@ -141,10 +142,10 @@ public class CategorysTests
     public void When_categories_list_is_not_empty_call_fileservice()
     {
         // Arrange
-        var categories = new List<Category>
+        var categories = new List<ShopGeneral.Data.Category>
         {
-            new Category { Id = 1, Name = "Category 1" },
-            new Category { Id = 2, Name = "Category 2" }
+            new ShopGeneral.Data.Category { Id = 1, Name = "Category 1" },
+            new ShopGeneral.Data.Category { Id = 2, Name = "Category 2" }
         };
 
         var products = new List<Product>
